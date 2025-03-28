@@ -6,13 +6,13 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **intent_hashes** | **Vec<String>** | All intent hashes that took part in this swap | 
 **near_tx_hashes** | **Vec<String>** | All Near transactions executed for this swap | 
-**amount_in** | **String** | Exact amount of **originToken** after trade was settled | 
-**amount_in_formatted** | **String** | Exact amount of **originToken** after trade was settled in readable format | 
-**amount_in_usd** | **String** | Exact amount of **originToken** equivalent in USD | 
-**amount_out** | **String** | Exact amount of **destinationToken** after trade was settled | 
-**amount_out_formatted** | **String** | Exact amount of **destinationToken** in readable format | 
-**amount_out_usd** | **String** | Exact amount of **destinationToken** equivalent in USD | 
-**slippage** | **f64** | Actual slippage | 
+**amount_in** | Option<**String**> | Exact amount of **originToken** after trade was settled | [optional]
+**amount_in_formatted** | Option<**String**> | Exact amount of **originToken** after trade was settled in readable format | [optional]
+**amount_in_usd** | Option<**String**> | Exact amount of **originToken** equivalent in USD | [optional]
+**amount_out** | Option<**String**> | Exact amount of **destinationToken** after trade was settled | [optional]
+**amount_out_formatted** | Option<**String**> | Exact amount of **destinationToken** in readable format | [optional]
+**amount_out_usd** | Option<**String**> | Exact amount of **destinationToken** equivalent in USD | [optional]
+**slippage** | Option<**f64**> | Actual slippage | [optional]
 **origin_chain_tx_hashes** | [**Vec<models::TransactionDetails>**](TransactionDetails.md) | Hashes and explorer URLs for all transactions on origin chain | 
 **destination_chain_tx_hashes** | [**Vec<models::TransactionDetails>**](TransactionDetails.md) | Hashes and explorer URLs for all transactions on destination chain | 
 **refunded_amount** | Option<**String**> | Amount of **originAsset** that got transferred to **refundTo** | [optional]

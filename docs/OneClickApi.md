@@ -4,10 +4,10 @@ All URIs are relative to *https://1click.chaindefuser.com*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**get_execution_status**](OneClickApi.md#get_execution_status) | **Get** /v0/status | Returns execution status for a given deposit address
-[**get_quote**](OneClickApi.md#get_quote) | **Post** /v0/quote | Returns an executable parameters for quote
-[**get_tokens**](OneClickApi.md#get_tokens) | **Get** /v0/tokens | Returns tokens that can be swapped
-[**submit_deposit_tx**](OneClickApi.md#submit_deposit_tx) | **Post** /v0/deposit/submit | Submit a deposit transaction
+[**get_execution_status**](OneClickApi.md#get_execution_status) | **GET** /v0/status | Returns execution status for a given deposit address
+[**get_quote**](OneClickApi.md#get_quote) | **POST** /v0/quote | Returns the best quote with deposit address
+[**get_tokens**](OneClickApi.md#get_tokens) | **GET** /v0/tokens | Returns tokens that can be swapped
+[**submit_deposit_tx**](OneClickApi.md#submit_deposit_tx) | **POST** /v0/deposit/submit | Submit a deposit transaction
 
 
 
@@ -42,7 +42,7 @@ No authorization required
 ## get_quote
 
 > models::QuoteResponse get_quote(quote_request)
-Returns an executable parameters for quote
+Returns the best quote with deposit address
 
 ### Parameters
 

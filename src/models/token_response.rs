@@ -25,19 +25,19 @@ pub struct TokenResponse {
     /// Token symbol (e.g. BTC, ETH)
     #[serde(rename = "symbol")]
     pub symbol: String,
-    /// Current price of the token
+    /// Current price of the token in USD
     #[serde(rename = "price")]
     pub price: f64,
-    /// Date when the price was last updated
+    /// Date when the token price was last updated
     #[serde(rename = "priceUpdatedAt")]
     pub price_updated_at: String,
     /// Contract address of the token
-    #[serde(rename = "contractAddress")]
-    pub contract_address: String,
+    #[serde(rename = "contractAddress", skip_serializing_if = "Option::is_none")]
+    pub contract_address: Option<String>,
 }
 
 impl TokenResponse {
-    pub fn new(asset_id: String, decimals: f64, blockchain: Blockchain, symbol: String, price: f64, price_updated_at: String, contract_address: String) -> TokenResponse {
+    pub fn new(asset_id: String, decimals: f64, blockchain: Blockchain, symbol: String, price: f64, price_updated_at: String) -> TokenResponse {
         TokenResponse {
             asset_id,
             decimals,
@@ -45,7 +45,7 @@ impl TokenResponse {
             symbol,
             price,
             price_updated_at,
-            contract_address,
+            contract_address: None,
         }
     }
 }
