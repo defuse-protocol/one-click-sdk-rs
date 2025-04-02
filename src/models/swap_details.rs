@@ -19,34 +19,34 @@ pub struct SwapDetails {
     /// All Near transactions executed for this swap
     #[serde(rename = "nearTxHashes")]
     pub near_tx_hashes: Vec<String>,
-    /// Exact amount of **originToken** after trade was settled
-    #[serde(rename = "amountIn")]
-    pub amount_in: String,
-    /// Exact amount of **originToken** after trade was settled in readable format
-    #[serde(rename = "amountInFormatted")]
-    pub amount_in_formatted: String,
-    /// Exact amount of **originToken** equivalent in USD
-    #[serde(rename = "amountInUsd")]
-    pub amount_in_usd: String,
-    /// Exact amount of **destinationToken** after trade was settled
-    #[serde(rename = "amountOut")]
-    pub amount_out: String,
-    /// Exact amount of **destinationToken** in readable format
-    #[serde(rename = "amountOutFormatted")]
-    pub amount_out_formatted: String,
-    /// Exact amount of **destinationToken** equivalent in USD
-    #[serde(rename = "amountOutUsd")]
-    pub amount_out_usd: String,
+    /// Exact amount of `originToken` after trade was settled
+    #[serde(rename = "amountIn", skip_serializing_if = "Option::is_none")]
+    pub amount_in: Option<String>,
+    /// Exact amount of `originToken` after trade was settled in readable format
+    #[serde(rename = "amountInFormatted", skip_serializing_if = "Option::is_none")]
+    pub amount_in_formatted: Option<String>,
+    /// Exact amount of `originToken` equivalent in USD
+    #[serde(rename = "amountInUsd", skip_serializing_if = "Option::is_none")]
+    pub amount_in_usd: Option<String>,
+    /// Exact amount of `destinationToken` after trade was settled
+    #[serde(rename = "amountOut", skip_serializing_if = "Option::is_none")]
+    pub amount_out: Option<String>,
+    /// Exact amount of `destinationToken` in readable format
+    #[serde(rename = "amountOutFormatted", skip_serializing_if = "Option::is_none")]
+    pub amount_out_formatted: Option<String>,
+    /// Exact amount of `destinationToken` equivalent in USD
+    #[serde(rename = "amountOutUsd", skip_serializing_if = "Option::is_none")]
+    pub amount_out_usd: Option<String>,
     /// Actual slippage
-    #[serde(rename = "slippage")]
+    #[serde(rename = "slippage", skip_serializing_if = "Option::is_none")]
     pub slippage: Option<f64>,
-    /// Hashes and explorer URLs for all transactions on origin chain
+    /// Hashes and explorer URLs for all transactions on the origin chain
     #[serde(rename = "originChainTxHashes")]
     pub origin_chain_tx_hashes: Vec<models::TransactionDetails>,
-    /// Hashes and explorer URLs for all transactions on destination chain
+    /// Hashes and explorer URLs for all transactions on the destination chain
     #[serde(rename = "destinationChainTxHashes")]
     pub destination_chain_tx_hashes: Vec<models::TransactionDetails>,
-    /// Amount of **originAsset** that got transferred to **refundTo**
+    /// Amount of `originAsset` that got transferred to `refundTo`
     #[serde(rename = "refundedAmount", skip_serializing_if = "Option::is_none")]
     pub refunded_amount: Option<String>,
     /// Refunded amount in readable format
@@ -64,26 +64,19 @@ impl SwapDetails {
     pub fn new(
         intent_hashes: Vec<String>,
         near_tx_hashes: Vec<String>,
-        amount_in: String,
-        amount_in_formatted: String,
-        amount_in_usd: String,
-        amount_out: String,
-        amount_out_formatted: String,
-        amount_out_usd: String,
-        slippage: f64,
         origin_chain_tx_hashes: Vec<models::TransactionDetails>,
         destination_chain_tx_hashes: Vec<models::TransactionDetails>,
     ) -> SwapDetails {
         SwapDetails {
             intent_hashes,
             near_tx_hashes,
-            amount_in,
-            amount_in_formatted,
-            amount_in_usd,
-            amount_out,
-            amount_out_formatted,
-            amount_out_usd,
-            slippage: Some(slippage),
+            amount_in: None,
+            amount_in_formatted: None,
+            amount_in_usd: None,
+            amount_out: None,
+            amount_out_formatted: None,
+            amount_out_usd: None,
+            slippage: None,
             origin_chain_tx_hashes,
             destination_chain_tx_hashes,
             refunded_amount: None,

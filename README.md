@@ -26,10 +26,10 @@ All URIs are relative to *https://1click.chaindefuser.com*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
-*OneClickApi* | [**get_execution_status**](docs/OneClickApi.md#get_execution_status) | **GET** /v0/status | Returns execution status for a given deposit address
-*OneClickApi* | [**get_quote**](docs/OneClickApi.md#get_quote) | **POST** /v0/quote | Returns the best quote with deposit address
-*OneClickApi* | [**get_tokens**](docs/OneClickApi.md#get_tokens) | **GET** /v0/tokens | Returns tokens that can be swapped
-*OneClickApi* | [**submit_deposit_tx**](docs/OneClickApi.md#submit_deposit_tx) | **POST** /v0/deposit/submit | Submit a deposit transaction
+*OneClickApi* | [**get_execution_status**](docs/OneClickApi.md#get_execution_status) | **GET** /v0/status | Check swap execution status
+*OneClickApi* | [**get_quote**](docs/OneClickApi.md#get_quote) | **POST** /v0/quote | Request a swap quote
+*OneClickApi* | [**get_tokens**](docs/OneClickApi.md#get_tokens) | **GET** /v0/tokens | Get supported tokens
+*OneClickApi* | [**submit_deposit_tx**](docs/OneClickApi.md#submit_deposit_tx) | **POST** /v0/deposit/submit | Submit deposit transaction hash
 
 
 ## Documentation For Models
