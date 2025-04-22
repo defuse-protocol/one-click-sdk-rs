@@ -80,6 +80,8 @@ pub enum Blockchain {
     Bsc,
     #[serde(rename = "pol")]
     Pol,
+    #[serde(rename = "tron")]
+    Tron,
 }
 
 impl Default for Blockchain {
