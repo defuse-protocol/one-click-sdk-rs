@@ -18,6 +18,7 @@ Name | Type | Description | Notes
 **deadline** | **String** | Timestamp in ISO format, that identifies when user refund will begin if the swap isn't completed by then. | 
 **referral** | Option<**String**> | Referral identifier | [optional]
 **quote_waiting_time_ms** | Option<**f64**> | Time in milliseconds user is willing to wait for quote from relay. | [optional][default to 3000]
+**app_fees** | Option<[**Vec<models::AppFee>**](AppFee.md)> | List of recipients and their fees | [optional]
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

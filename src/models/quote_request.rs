@@ -55,6 +55,9 @@ pub struct QuoteRequest {
     /// Time in milliseconds user is willing to wait for quote from relay.
     #[serde(rename = "quoteWaitingTimeMs", skip_serializing_if = "Option::is_none")]
     pub quote_waiting_time_ms: Option<f64>,
+    /// List of recipients and their fees
+    #[serde(rename = "appFees", skip_serializing_if = "Option::is_none")]
+    pub app_fees: Option<Vec<models::AppFee>>,
 }
 
 impl QuoteRequest {
@@ -74,6 +77,7 @@ impl QuoteRequest {
             deadline,
             referral: None,
             quote_waiting_time_ms: None,
+            app_fees: None,
         }
     }
 }

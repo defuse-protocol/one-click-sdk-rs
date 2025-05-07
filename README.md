@@ -34,6 +34,7 @@ Class | Method | HTTP request | Description
 
 ## Documentation For Models
 
+ - [AppFee](docs/AppFee.md)
  - [BadRequestResponse](docs/BadRequestResponse.md)
  - [GetExecutionStatusResponse](docs/GetExecutionStatusResponse.md)
  - [Quote](docs/Quote.md)

@@ -1,3 +1,5 @@
+pub mod app_fee;
+pub use self::app_fee::AppFee;
 pub mod bad_request_response;
 pub use self::bad_request_response::BadRequestResponse;
 pub mod get_execution_status_response;
