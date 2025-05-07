@@ -33,7 +33,7 @@ jobs:
 
       - name: Update Cargo.toml version
         run: |
-            sed -i "s/^version = \".*\"/version = \"${{ steps.get_version.outputs.version }}\"/" Cargo.toml
+            sed -i "s/^version = \".*\"/version = \"$(date +'%Y.%-m.%-d')\"/" Cargo.toml
   
       - name: Generate Rust Client
         run: |
