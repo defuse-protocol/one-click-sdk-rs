@@ -32,7 +32,6 @@ jobs:
 
 
       - name: Update Cargo.toml version
-        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
         run: |
             sed -i "s/^version = \".*\"/version = \"${{ steps.get_version.outputs.version }}\"/" Cargo.toml
   
