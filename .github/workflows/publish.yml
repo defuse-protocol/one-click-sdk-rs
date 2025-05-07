@@ -18,14 +18,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
 
       - name: Generate Rust Client
         run: |
-          npx @openapitools/openapi-generator-cli generate \
+          uvx "openapi-generator-cli[jdk4py]" generate \
             -i https://1click.chaindefuser.com/docs/v0/openapi.yaml \
             --package-name one-click-sdk-rs \
             -g rust
