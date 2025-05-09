@@ -1,0 +1,81 @@
+name: Publish to crates.io
+
+on:
+  schedule:
+    # Run at 00:00 UTC every day
+    - cron: "0 0 * * *"
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch: # Allow manual triggering
+
+env:
+  CARGO_TERM_COLOR: always
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+
+      - name: Get current date version
+        id: get_version
+        run: |
+          DATE_VERSION=$(date +'%Y.%m.%d')
+          echo "version=$DATE_VERSION" >> $GITHUB_OUTPUT
+
+      - name: Update Cargo.toml version
+        run: |
+          export DATE_VERSION=$(date +'%Y.%-m.%-d')
+          sed -i "s/^version = \".*\"/version = \"$DATE_VERSION\"/" Cargo.toml
+      - name: Generate Rust Client
+        run: |
+          uvx "openapi-generator-cli[jdk4py]" generate \
+            -i https://1click.chaindefuser.com/docs/v0/openapi.yaml \
+            --package-name one-click-sdk-rs \
+            -g rust
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+
+      - name: Cache dependencies
+        uses: Swatinem/rust-cache@v2
+
+      - name: Build
+        run: cargo build --verbose
+
+      - name: Run tests
+        run: cargo test --verbose
+
+      - name: Check for changes
+        id: check_changes
+        run: |
+          if [[ -n "$(git status --porcelain)" ]]; then
+            echo "changes=true" >> $GITHUB_OUTPUT
+          else
+            echo "changes=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commit and push changes
+        if: steps.check_changes.outputs.changes == 'true' && github.event_name == 'schedule'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add .
+          git commit -m "chore: update generated client to version ${{ steps.get_version.outputs.version }} [skip ci]"
+          git push
+
+      - name: Publish to crates.io
+        run: |
+          cat Cargo.toml
+          cargo publish --verbose --allow-dirty
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
