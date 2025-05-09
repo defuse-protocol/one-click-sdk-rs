@@ -3,11 +3,11 @@ name: Publish to crates.io
 on:
   schedule:
     # Run at 00:00 UTC every day
-    - cron: '0 0 * * *'
+    - cron: "0 0 * * *"
   push:
     tags:
-      - 'v*'
-  workflow_dispatch:  # Allow manual triggering
+      - "v*"
+  workflow_dispatch: # Allow manual triggering
 
 env:
   CARGO_TERM_COLOR: always
@@ -23,18 +23,17 @@ jobs:
 
       - name: Install uv
         uses: astral-sh/setup-uv@v5
-    
+
       - name: Get current date version
         id: get_version
         run: |
           DATE_VERSION=$(date +'%Y.%m.%d')
           echo "version=$DATE_VERSION" >> $GITHUB_OUTPUT
 
-
       - name: Update Cargo.toml version
         run: |
-            sed -i "s/^version = \".*\"/version = \"$(date +'%Y.%-m.%-d')\"/" Cargo.toml
-  
+          export DATE_VERSION=$(date +'%Y.%-m.%-d')
+          sed -i "s/^version = \".*\"/version = \"$DATE_VERSION\"/" Cargo.toml
       - name: Generate Rust Client
         run: |
           uvx "openapi-generator-cli[jdk4py]" generate \
@@ -56,7 +55,6 @@ jobs:
       - name: Run tests
         run: cargo test --verbose
 
-
       - name: Check for changes
         id: check_changes
         run: |
@@ -76,7 +74,8 @@ jobs:
           git push
 
       - name: Publish to crates.io
-        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
-        run: cargo publish --verbose --allow-dirty
+        run: |
+          cat Cargo.toml
+          cargo publish --verbose --allow-dirty
         env:
-          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }} 
+          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
