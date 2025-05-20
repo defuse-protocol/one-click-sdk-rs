@@ -1,0 +1,91 @@
+name: Generate and Publish Rust SDK
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'API version to generate SDK for'
+        required: false
+        type: string
+
+jobs:
+  generate-and-publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: stable
+
+      - name: Get version
+        id: get-version
+        run: |
+          VERSION="${{ github.event.inputs.version }}"
+          if [ -z "$VERSION" ] && [ -n "${{ github.event.client_payload.VERSION }}" ]; then
+            VERSION="${{ github.event.client_payload.VERSION }}"
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "Using API version: $VERSION"
+
+      - name: Setup SOPS
+        uses: mdgreenwald/mozilla-sops-action@v1
+        with:
+          version: latest
+
+      - name: Decrypt secrets file
+        run: |
+          export SOPS_AGE_KEY="${{ secrets.SOPS_AGE_KEY }}"
+          sops -d secrets/secrets.enc.yaml > secrets/secrets.yaml
+
+      - name: Install yq
+        run: |
+          YQ_VERSION="v4.45.1"
+          wget https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_linux_amd64 -O /usr/local/bin/yq
+          chmod +x /usr/local/bin/yq
+
+      - name: Load Cargo registry token
+        id: load-cargo-token
+        run: |
+          CARGO_REGISTRY_TOKEN=$(yq '.CARGO_REGISTRY_TOKEN' secrets/secrets.yaml)
+          echo "::add-mask::$CARGO_REGISTRY_TOKEN"
+          echo "CARGO_REGISTRY_TOKEN=$CARGO_REGISTRY_TOKEN" >> "$GITHUB_OUTPUT"
+
+      - name: Set up JDK for OpenAPI Generator
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Generate and publish SDK
+        if: steps.get-version.outputs.version != ''
+        env:
+          API_VERSION: ${{ steps.get-version.outputs.version }}
+          CARGO_REGISTRY_TOKEN: ${{ steps.load-cargo-token.outputs.CARGO_REGISTRY_TOKEN }}
+        run: |
+          chmod +x ./scripts/regenerate-and-publish.sh
+          ./scripts/regenerate-and-publish.sh
+
+      - name: Commit changes
+        if: steps.get-version.outputs.version != ''
+        run: |
+          VERSION="${{ steps.get-version.outputs.version }}"
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git add .
+          git commit -m "Release: ${VERSION} version"
+          git push
+
+      - name: Create Git tag
+        if: steps.get-version.outputs.version != ''
+        run: |
+          VERSION="${{ steps.get-version.outputs.version }}"
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git tag -a "$VERSION" -m "Release $VERSION"
+          git push origin "$VERSION"
