@@ -51,6 +51,7 @@ cargo login "$CARGO_REGISTRY_TOKEN" || { echo "Failed to login to crates.io"; ex
 cargo publish || { echo "Failed to publish package"; exit 1; }
 
 echo "Pushing changes..."
+git tag -a "v$VERSION_NUMBER" -m "Release v$VERSION_NUMBER"
 git push
 
 echo "Rust SDK successfully regenerated and published for API version ${VERSION_NUMBER}"

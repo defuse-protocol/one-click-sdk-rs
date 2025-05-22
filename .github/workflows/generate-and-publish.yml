@@ -1,6 +1,8 @@
 name: Generate and Publish Rust SDK
 
 on:
+  repository_dispatch:
+    types: [generate-sdk]
   workflow_dispatch:
     inputs:
       version:
@@ -70,22 +72,3 @@ jobs:
         run: |
           chmod +x ./scripts/regenerate-and-publish.sh
           ./scripts/regenerate-and-publish.sh
-
-      - name: Commit changes
-        if: steps.get-version.outputs.version != ''
-        run: |
-          VERSION="${{ steps.get-version.outputs.version }}"
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "actions@github.com"
-          git add .
-          git commit -m "Release: ${VERSION} version"
-          git push
-
-      - name: Create Git tag
-        if: steps.get-version.outputs.version != ''
-        run: |
-          VERSION="${{ steps.get-version.outputs.version }}"
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "actions@github.com"
-          git tag -a "$VERSION" -m "Release $VERSION"
-          git push origin "$VERSION"
