@@ -1,6 +1,6 @@
 [package]
 name = "one-click-sdk-rs"
-version = "0.1.3"
+version = "0.1.5"
 authors = ["OpenAPI Generator team and contributors"]
 description = "API for One-Click Swaps"
 # Override this license by providing a License Object in the OpenAPI.

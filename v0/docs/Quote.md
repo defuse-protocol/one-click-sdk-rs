@@ -15,7 +15,7 @@ Name | Type | Description | Notes
 **min_amount_out** | **String** | Minimum amount with slippage taken into account | 
 **deadline** | Option<**String**> | Time when the deposit address will become inactive and funds might be lost | [optional]
 **time_when_inactive** | Option<**String**> | Time when the deposit address will become cold and swap processing will take more time | [optional]
-**time_estimate** | Option<**f64**> | Estimated time in seconds for swap to be executed after the deposit transaction is confirmed | [optional]
+**time_estimate** | **f64** | Estimated time in seconds for swap to be executed after the deposit transaction is confirmed | 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

@@ -47,12 +47,12 @@ pub struct Quote {
     #[serde(rename = "timeWhenInactive", skip_serializing_if = "Option::is_none")]
     pub time_when_inactive: Option<String>,
     /// Estimated time in seconds for swap to be executed after the deposit transaction is confirmed
-    #[serde(rename = "timeEstimate", skip_serializing_if = "Option::is_none")]
-    pub time_estimate: Option<f64>,
+    #[serde(rename = "timeEstimate")]
+    pub time_estimate: f64,
 }
 
 impl Quote {
-    pub fn new(amount_in: String, amount_in_formatted: String, amount_in_usd: String, min_amount_in: String, amount_out: String, amount_out_formatted: String, amount_out_usd: String, min_amount_out: String) -> Quote {
+    pub fn new(amount_in: String, amount_in_formatted: String, amount_in_usd: String, min_amount_in: String, amount_out: String, amount_out_formatted: String, amount_out_usd: String, min_amount_out: String, time_estimate: f64) -> Quote {
         Quote {
             deposit_address: None,
             amount_in,
@@ -65,7 +65,7 @@ impl Quote {
             min_amount_out,
             deadline: None,
             time_when_inactive: None,
-            time_estimate: None,
+            time_estimate,
         }
     }
 }
