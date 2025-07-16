@@ -15,8 +15,8 @@ Name | Type | Description | Notes
 **refund_type** | **String** | Type of refund address: - `ORIGIN_CHAIN` - assets will be refunded to `refundTo` address on the origin chain - `INTENTS` - assets will be refunded to `refundTo` intents account | 
 **recipient** | **String** | Recipient address. The format should match `recipientType`. | 
 **recipient_type** | **String** | Type of recipient address: - `DESTINATION_CHAIN` - assets will be transferred to chain of `destinationAsset` - `INTENTS` - assets will be transferred to account inside intents | 
-**deadline** | **String** | Timestamp in ISO format, that identifies when user refund will begin if the swap isn't completed by then. | 
-**referral** | Option<**String**> | Referral identifier(lower case only) | [optional]
+**deadline** | **String** | Timestamp in ISO format, that identifies when user refund will begin if the swap isn't completed by then. It needs to exceed the time required for the deposit tx to be minted, e.g. for Bitcoin it might require ~1h depending on the gas fees paid. | 
+**referral** | Option<**String**> | Referral identifier(lower case only). It will be reflected in the on-chain data and displayed on public analytics platforms. | [optional]
 **quote_waiting_time_ms** | Option<**f64**> | Time in milliseconds user is willing to wait for quote from relay. | [optional][default to 3000]
 **app_fees** | Option<[**Vec<models::AppFee>**](AppFee.md)> | List of recipients and their fees | [optional]
 
