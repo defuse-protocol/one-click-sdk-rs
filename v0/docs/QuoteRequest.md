@@ -5,7 +5,7 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **dry** | **bool** | Flag indicating whether this is a dry run request. If `true`, the response will **NOT** contain the following fields: - `depositAddress` - `timeWhenInactive` - `deadline` | 
-**swap_type** | **String** | Whether to use the amount as the output or the input for the basis of the swap: - `EXACT_INPUT` - request output amount for exact input. - `EXACT_OUTPUT` - request output amount for exact output. The `refundTo` address will always receive excess tokens back even after the swap is complete. | 
+**swap_type** | **String** | Whether to use the amount as the output or the input for the basis of the swap: - `EXACT_INPUT` - request output amount for exact input. - `EXACT_OUTPUT` - request output amount for exact output. The `refundTo` address will always receive excess tokens back even after the swap is complete. - `FLEX_INPUT` - flexible input amount that allows for partial deposits and variable amounts. | 
 **slippage_tolerance** | **f64** | Slippage tolerance for the swap. This value is in basis points (1/100th of a percent), e.g. 100 for 1% slippage. | 
 **origin_asset** | **String** | ID of the origin asset. | 
 **deposit_type** | **String** | Type of the deposit address: - `ORIGIN_CHAIN` - deposit address on the origin chain - `INTENTS` - **account ID** inside near intents to which you should transfer assets inside intents. | 
@@ -14,6 +14,8 @@ Name | Type | Description | Notes
 **refund_to** | **String** | Address for user refund. | 
 **refund_type** | **String** | Type of refund address: - `ORIGIN_CHAIN` - assets will be refunded to `refundTo` address on the origin chain - `INTENTS` - assets will be refunded to `refundTo` intents account | 
 **recipient** | **String** | Recipient address. The format should match `recipientType`. | 
+**virtual_chain_recipient** | Option<**String**> | EVM address of a transfer recipient in a virtual chain | [optional]
+**virtual_chain_refund_recipient** | Option<**String**> | EVM address of a refund recipient in a virtual chain | [optional]
 **recipient_type** | **String** | Type of recipient address: - `DESTINATION_CHAIN` - assets will be transferred to chain of `destinationAsset` - `INTENTS` - assets will be transferred to account inside intents | 
 **deadline** | **String** | Timestamp in ISO format, that identifies when user refund will begin if the swap isn't completed by then. It needs to exceed the time required for the deposit tx to be minted, e.g. for Bitcoin it might require ~1h depending on the gas fees paid. | 
 **referral** | Option<**String**> | Referral identifier(lower case only). It will be reflected in the on-chain data and displayed on public analytics platforms. | [optional]

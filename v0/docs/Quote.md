@@ -16,6 +16,8 @@ Name | Type | Description | Notes
 **deadline** | Option<**String**> | Time when the deposit address will become inactive and funds might be lost | [optional]
 **time_when_inactive** | Option<**String**> | Time when the deposit address will become cold and swap processing will take more time | [optional]
 **time_estimate** | **f64** | Estimated time in seconds for swap to be executed after the deposit transaction is confirmed | 
+**virtual_chain_recipient** | Option<**String**> | EVM address of a transfer recipient in a virtual chain | [optional]
+**virtual_chain_refund_recipient** | Option<**String**> | EVM address of a refund recipient in a virtual chain | [optional]
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 
