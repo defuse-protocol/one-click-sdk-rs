@@ -55,5 +55,5 @@ cargo doc --open
 
 ## Author
 
-
+© 2025 NEAR Foundation
 
