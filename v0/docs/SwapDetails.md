@@ -18,6 +18,7 @@ Name | Type | Description | Notes
 **refunded_amount** | Option<**String**> | Amount of `originAsset` transferred to `refundTo` | [optional]
 **refunded_amount_formatted** | Option<**String**> | Refunded amount in readable format | [optional]
 **refunded_amount_usd** | Option<**String**> | Refunded amount equivalent in USD | [optional]
+**referral** | Option<**String**> | Referral identifier | [optional]
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

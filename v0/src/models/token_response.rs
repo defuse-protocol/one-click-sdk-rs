@@ -90,6 +90,10 @@ pub enum Blockchain {
     Avax,
     #[serde(rename = "cardano")]
     Cardano,
+    #[serde(rename = "ltc")]
+    Ltc,
+    #[serde(rename = "xlayer")]
+    Xlayer,
 }
 
 impl Default for Blockchain {

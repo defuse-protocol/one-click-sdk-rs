@@ -55,6 +55,9 @@ pub struct SwapDetails {
     /// Refunded amount equivalent in USD
     #[serde(rename = "refundedAmountUsd", skip_serializing_if = "Option::is_none")]
     pub refunded_amount_usd: Option<String>,
+    /// Referral identifier
+    #[serde(rename = "referral", skip_serializing_if = "Option::is_none")]
+    pub referral: Option<String>,
 }
 
 impl SwapDetails {
@@ -74,6 +77,7 @@ impl SwapDetails {
             refunded_amount: None,
             refunded_amount_formatted: None,
             refunded_amount_usd: None,
+            referral: None,
         }
     }
 }

@@ -4,6 +4,7 @@ All URIs are relative to *https://1click.chaindefuser.com*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
+[**get_any_input_quote_withdrawals**](OneClickApi.md#get_any_input_quote_withdrawals) | **GET** /v0/any-input/withdrawals | Get ANY_INPUT withdrawals
 [**get_execution_status**](OneClickApi.md#get_execution_status) | **GET** /v0/status | Check swap execution status
 [**get_quote**](OneClickApi.md#get_quote) | **POST** /v0/quote | Request a swap quote
 [**get_tokens**](OneClickApi.md#get_tokens) | **GET** /v0/tokens | Get supported tokens
@@ -11,12 +12,12 @@ Method | HTTP request | Description
 
 
 
-## get_execution_status
+## get_any_input_quote_withdrawals
 
-> models::GetExecutionStatusResponse get_execution_status(deposit_address)
-Check swap execution status
+> models::GetAnyInputQuoteWithdrawals get_any_input_quote_withdrawals(deposit_address, deposit_memo, timestamp_from, page, limit, sort_order)
+Get ANY_INPUT withdrawals
 
-Retrieves the current status of a swap using the unique deposit address from the quote.  The response includes the state of the swap (e.g., pending, processing, success, refunded) and any associated swap and transaction details.
+Retrieves all withdrawals by ANY_INPUT quote with filtering, pagination and sorting
 
 ### Parameters
 
@@ -24,6 +25,42 @@ Retrieves the current status of a swap using the unique deposit address from the
 Name | Type | Description  | Required | Notes
 ------------- | ------------- | ------------- | ------------- | -------------
 **deposit_address** | **String** |  | [required] |
+**deposit_memo** | Option<**String**> |  |  |
+**timestamp_from** | Option<**String**> | Filter withdrawals from this timestamp (ISO string) |  |
+**page** | Option<**f64**> | Page number for pagination (default: 1) |  |
+**limit** | Option<**f64**> | Number of withdrawals per page (max: 50, default: 50) |  |
+**sort_order** | Option<**String**> | Sort order |  |
+
+### Return type
+
+[**models::GetAnyInputQuoteWithdrawals**](GetAnyInputQuoteWithdrawals.md)
+
+### Authorization
+
+[JWT-auth](../README.md#JWT-auth)
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
+- **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+
+## get_execution_status
+
+> models::GetExecutionStatusResponse get_execution_status(deposit_address, deposit_memo)
+Check swap execution status
+
+Retrieves the current status of a swap using the unique deposit address from the quote, if quote response included deposit memo, it is required as well.  The response includes the state of the swap (e.g., pending, processing, success, refunded) and any associated swap and transaction details.
+
+### Parameters
+
+
+Name | Type | Description  | Required | Notes
+------------- | ------------- | ------------- | ------------- | -------------
+**deposit_address** | **String** |  | [required] |
+**deposit_memo** | Option<**String**> |  |  |
 
 ### Return type
 

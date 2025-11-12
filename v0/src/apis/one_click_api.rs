@@ -15,6 +15,15 @@ use crate::{apis::ResponseContent, models};
 use super::{Error, configuration, ContentType};
 
 
+/// struct for typed errors of method [`get_any_input_quote_withdrawals`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum GetAnyInputQuoteWithdrawalsError {
+    Status401(),
+    Status404(models::BadRequestResponse),
+    UnknownValue(serde_json::Value),
+}
+
 /// struct for typed errors of method [`get_execution_status`]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
@@ -50,15 +59,80 @@ pub enum SubmitDepositTxError {
 }
 
 
-/// Retrieves the current status of a swap using the unique deposit address from the quote.  The response includes the state of the swap (e.g., pending, processing, success, refunded) and any associated swap and transaction details.
-pub async fn get_execution_status(configuration: &configuration::Configuration, deposit_address: &str) -> Result<models::GetExecutionStatusResponse, Error<GetExecutionStatusError>> {
+/// Retrieves all withdrawals by ANY_INPUT quote with filtering, pagination and sorting
+pub async fn get_any_input_quote_withdrawals(configuration: &configuration::Configuration, deposit_address: &str, deposit_memo: Option<&str>, timestamp_from: Option<&str>, page: Option<f64>, limit: Option<f64>, sort_order: Option<&str>) -> Result<models::GetAnyInputQuoteWithdrawals, Error<GetAnyInputQuoteWithdrawalsError>> {
     // add a prefix to parameters to efficiently prevent name collisions
-    let p_deposit_address = deposit_address;
+    let p_query_deposit_address = deposit_address;
+    let p_query_deposit_memo = deposit_memo;
+    let p_query_timestamp_from = timestamp_from;
+    let p_query_page = page;
+    let p_query_limit = limit;
+    let p_query_sort_order = sort_order;
+
+    let uri_str = format!("{}/v0/any-input/withdrawals", configuration.base_path);
+    let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
+
+    req_builder = req_builder.query(&[("depositAddress", &p_query_deposit_address.to_string())]);
+    if let Some(ref param_value) = p_query_deposit_memo {
+        req_builder = req_builder.query(&[("depositMemo", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_timestamp_from {
+        req_builder = req_builder.query(&[("timestampFrom", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_page {
+        req_builder = req_builder.query(&[("page", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_limit {
+        req_builder = req_builder.query(&[("limit", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_sort_order {
+        req_builder = req_builder.query(&[("sortOrder", &param_value.to_string())]);
+    }
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    if let Some(ref token) = configuration.bearer_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+    let content_type = resp
+        .headers()
+        .get("content-type")
+        .and_then(|v| v.to_str().ok())
+        .unwrap_or("application/octet-stream");
+    let content_type = super::ContentType::from(content_type);
+
+    if !status.is_client_error() && !status.is_server_error() {
+        let content = resp.text().await?;
+        match content_type {
+            ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
+            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::GetAnyInputQuoteWithdrawals`"))),
+            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::GetAnyInputQuoteWithdrawals`")))),
+        }
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<GetAnyInputQuoteWithdrawalsError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent { status, content, entity }))
+    }
+}
+
+/// Retrieves the current status of a swap using the unique deposit address from the quote, if quote response included deposit memo, it is required as well.  The response includes the state of the swap (e.g., pending, processing, success, refunded) and any associated swap and transaction details.
+pub async fn get_execution_status(configuration: &configuration::Configuration, deposit_address: &str, deposit_memo: Option<&str>) -> Result<models::GetExecutionStatusResponse, Error<GetExecutionStatusError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_query_deposit_address = deposit_address;
+    let p_query_deposit_memo = deposit_memo;
 
     let uri_str = format!("{}/v0/status", configuration.base_path);
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
 
-    req_builder = req_builder.query(&[("depositAddress", &p_deposit_address.to_string())]);
+    req_builder = req_builder.query(&[("depositAddress", &p_query_deposit_address.to_string())]);
+    if let Some(ref param_value) = p_query_deposit_memo {
+        req_builder = req_builder.query(&[("depositMemo", &param_value.to_string())]);
+    }
     if let Some(ref user_agent) = configuration.user_agent {
         req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
     }
@@ -94,7 +168,7 @@ pub async fn get_execution_status(configuration: &configuration::Configuration, 
 /// Generates a swap quote based on input parameters such as the assets, amount, slippage tolerance, and recipient/refund information.  Returns pricing details, estimated time, and a unique **deposit address** to which tokens must be transferred to initiate the swap.  You can set the `dry` parameter to `true` to simulate the quote request **without generating a deposit address** or initiating the swap process. This is useful for previewing swap parameters or validating input data without committing to an actual swap.  This endpoint is the first required step in the swap process.
 pub async fn get_quote(configuration: &configuration::Configuration, quote_request: models::QuoteRequest) -> Result<models::QuoteResponse, Error<GetQuoteError>> {
     // add a prefix to parameters to efficiently prevent name collisions
-    let p_quote_request = quote_request;
+    let p_body_quote_request = quote_request;
 
     let uri_str = format!("{}/v0/quote", configuration.base_path);
     let mut req_builder = configuration.client.request(reqwest::Method::POST, &uri_str);
@@ -105,7 +179,7 @@ pub async fn get_quote(configuration: &configuration::Configuration, quote_reque
     if let Some(ref token) = configuration.bearer_access_token {
         req_builder = req_builder.bearer_auth(token.to_owned());
     };
-    req_builder = req_builder.json(&p_quote_request);
+    req_builder = req_builder.json(&p_body_quote_request);
 
     let req = req_builder.build()?;
     let resp = configuration.client.execute(req).await?;
@@ -170,7 +244,7 @@ pub async fn get_tokens(configuration: &configuration::Configuration, ) -> Resul
 /// Optionally notifies the 1Click service that a deposit has been sent to the specified address, using the blockchain transaction hash.  This step can speed up swap processing by allowing the system to preemptively verify the deposit.
 pub async fn submit_deposit_tx(configuration: &configuration::Configuration, submit_deposit_tx_request: models::SubmitDepositTxRequest) -> Result<models::SubmitDepositTxResponse, Error<SubmitDepositTxError>> {
     // add a prefix to parameters to efficiently prevent name collisions
-    let p_submit_deposit_tx_request = submit_deposit_tx_request;
+    let p_body_submit_deposit_tx_request = submit_deposit_tx_request;
 
     let uri_str = format!("{}/v0/deposit/submit", configuration.base_path);
     let mut req_builder = configuration.client.request(reqwest::Method::POST, &uri_str);
@@ -181,7 +255,7 @@ pub async fn submit_deposit_tx(configuration: &configuration::Configuration, sub
     if let Some(ref token) = configuration.bearer_access_token {
         req_builder = req_builder.bearer_auth(token.to_owned());
     };
-    req_builder = req_builder.json(&p_submit_deposit_tx_request);
+    req_builder = req_builder.json(&p_body_submit_deposit_tx_request);
 
     let req = req_builder.build()?;
     let resp = configuration.client.execute(req).await?;

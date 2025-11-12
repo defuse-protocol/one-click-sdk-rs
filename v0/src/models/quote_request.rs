@@ -19,7 +19,7 @@ pub struct QuoteRequest {
     /// What deposit address mode you will get in the response, most chain supports only `SIMPLE` and some(for example `stellar`) only `MEMO`: - `SIMPLE` - usual deposit with only deposit address. - `MEMO` - some chains will **REQUIRE** the `memo` together with `depositAddress` for swap to work.
     #[serde(rename = "depositMode", skip_serializing_if = "Option::is_none")]
     pub deposit_mode: Option<DepositMode>,
-    /// How to interpret `amount` when performing the swap:   - `EXACT_INPUT` - requests the output amount for an exact input.   - `EXACT_OUTPUT` - requests the input amount for an exact output. The `refundTo` address always receives any excess tokens after the swap is complete.   - `FLEX_INPUT` - a flexible input amount that allows for partial deposits and variable amounts.
+    /// How to interpret `amount` (and refunds) when performing the swap:  - `EXACT_INPUT` — requests the output amount for an exact input.   - If deposit is less than `amountIn`, the deposit is refunded by deadline.   - If deposit is above than `amountIn`, the swap is processed and the excess is refunded to `refundTo` address after swap is complete.  - `EXACT_OUTPUT` — requests the input amount for an exact output.   - The quote response would have two fields `minAmountIn` and `maxAmountIn`.   - If the input is above than `maxAmountIn` the swap is processed and the excess is refunded to `refundTo` address after swap is complete.   - If the input is less than  `minAmountIn`, the deposit is refunded by deadline.  - `FLEX_INPUT` — a flexible input amount that allows for partial deposits and variable amounts.   - `slippage` applies both to `amountOut` and `amountIn` and defines an acceptable range (`minAmountIn` and `minAmountOut`).   - Any amount higher than `minAmountIn` is accepted and converted to the output asset as long as `minAmountOut` is met.   - The `amountIn` can be less, as long as the 'slippage + 1%' constraint is met. If the total received by the deadline is below the lower bound, the deposit is refunded.   - If deposits exceed the upper bound, the swap is still processed
     #[serde(rename = "swapType")]
     pub swap_type: SwapType,
     /// Slippage tolerance for the swap. This value is in basis points (1/100th of a percent), e.g. 100 for 1% slippage.
@@ -46,12 +46,21 @@ pub struct QuoteRequest {
     /// Recipient address. The format must match `recipientType`.
     #[serde(rename = "recipient")]
     pub recipient: String,
+    /// Addresses of connected wallets.
+    #[serde(rename = "connectedWallets", skip_serializing_if = "Option::is_none")]
+    pub connected_wallets: Option<Vec<String>>,
+    /// Unique client session identifier for 1Click.
+    #[serde(rename = "sessionId", skip_serializing_if = "Option::is_none")]
+    pub session_id: Option<String>,
     /// EVM address of a transfer recipient in a virtual chain
     #[serde(rename = "virtualChainRecipient", skip_serializing_if = "Option::is_none")]
     pub virtual_chain_recipient: Option<String>,
     /// EVM address of a refund recipient in a virtual chain
     #[serde(rename = "virtualChainRefundRecipient", skip_serializing_if = "Option::is_none")]
     pub virtual_chain_refund_recipient: Option<String>,
+    /// **HIGHLY EXPERIMENTAL** Message to pass to `ft_transfer_call` when withdrawing assets to NEAR.  Otherwise, `ft_transfer` will be used.  **WARNING**: Funds will be lost if used with non NEP-141 tokens, in case of insufficient `storage_deposit` or if the recipient does not implement `ft_on_transfer` method.
+    #[serde(rename = "customRecipientMsg", skip_serializing_if = "Option::is_none")]
+    pub custom_recipient_msg: Option<String>,
     /// Type of recipient address: - `DESTINATION_CHAIN` - assets are transferred to the chain of `destinationAsset`. - `INTENTS` - assets are transferred to an account inside Intents
     #[serde(rename = "recipientType")]
     pub recipient_type: RecipientType,
@@ -61,7 +70,7 @@ pub struct QuoteRequest {
     /// Referral identifier (lowercase only). It will be reflected in the on-chain data and displayed on public analytics platforms.
     #[serde(rename = "referral", skip_serializing_if = "Option::is_none")]
     pub referral: Option<String>,
-    /// Time in milliseconds the user is willing to wait for a quote from the relay.
+    /// Time in milliseconds the user is willing to wait for a quote from the relay. **If you want to receive the fastest quote - use `0` as a value** 
     #[serde(rename = "quoteWaitingTimeMs", skip_serializing_if = "Option::is_none")]
     pub quote_waiting_time_ms: Option<f64>,
     /// List of recipients and their fees
@@ -83,8 +92,11 @@ impl QuoteRequest {
             refund_to,
             refund_type,
             recipient,
+            connected_wallets: None,
+            session_id: None,
             virtual_chain_recipient: None,
             virtual_chain_refund_recipient: None,
+            custom_recipient_msg: None,
             recipient_type,
             deadline,
             referral: None,
@@ -107,7 +119,7 @@ impl Default for DepositMode {
         Self::Simple
     }
 }
-/// How to interpret `amount` when performing the swap:   - `EXACT_INPUT` - requests the output amount for an exact input.   - `EXACT_OUTPUT` - requests the input amount for an exact output. The `refundTo` address always receives any excess tokens after the swap is complete.   - `FLEX_INPUT` - a flexible input amount that allows for partial deposits and variable amounts.
+/// How to interpret `amount` (and refunds) when performing the swap:  - `EXACT_INPUT` — requests the output amount for an exact input.   - If deposit is less than `amountIn`, the deposit is refunded by deadline.   - If deposit is above than `amountIn`, the swap is processed and the excess is refunded to `refundTo` address after swap is complete.  - `EXACT_OUTPUT` — requests the input amount for an exact output.   - The quote response would have two fields `minAmountIn` and `maxAmountIn`.   - If the input is above than `maxAmountIn` the swap is processed and the excess is refunded to `refundTo` address after swap is complete.   - If the input is less than  `minAmountIn`, the deposit is refunded by deadline.  - `FLEX_INPUT` — a flexible input amount that allows for partial deposits and variable amounts.   - `slippage` applies both to `amountOut` and `amountIn` and defines an acceptable range (`minAmountIn` and `minAmountOut`).   - Any amount higher than `minAmountIn` is accepted and converted to the output asset as long as `minAmountOut` is met.   - The `amountIn` can be less, as long as the 'slippage + 1%' constraint is met. If the total received by the deadline is below the lower bound, the deposit is refunded.   - If deposits exceed the upper bound, the swap is still processed
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
 pub enum SwapType {
     #[serde(rename = "EXACT_INPUT")]
@@ -116,6 +128,8 @@ pub enum SwapType {
     ExactOutput,
     #[serde(rename = "FLEX_INPUT")]
     FlexInput,
+    #[serde(rename = "ANY_INPUT")]
+    AnyInput,
 }
 
 impl Default for SwapType {

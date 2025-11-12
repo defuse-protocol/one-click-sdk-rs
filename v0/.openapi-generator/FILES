@@ -2,8 +2,10 @@
 .travis.yml
 Cargo.toml
 README.md
+docs/AnyInputQuoteWithdrawal.md
 docs/AppFee.md
 docs/BadRequestResponse.md
+docs/GetAnyInputQuoteWithdrawals.md
 docs/GetExecutionStatusResponse.md
 docs/OneClickApi.md
 docs/Quote.md
@@ -19,8 +21,10 @@ src/apis/configuration.rs
 src/apis/mod.rs
 src/apis/one_click_api.rs
 src/lib.rs
+src/models/any_input_quote_withdrawal.rs
 src/models/app_fee.rs
 src/models/bad_request_response.rs
+src/models/get_any_input_quote_withdrawals.rs
 src/models/get_execution_status_response.rs
 src/models/mod.rs
 src/models/quote.rs

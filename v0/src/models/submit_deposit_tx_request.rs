@@ -19,6 +19,12 @@ pub struct SubmitDepositTxRequest {
     /// Deposit address for the quote
     #[serde(rename = "depositAddress")]
     pub deposit_address: String,
+    /// Sender account (used only for NEAR blockchain)
+    #[serde(rename = "nearSenderAccount", skip_serializing_if = "Option::is_none")]
+    pub near_sender_account: Option<String>,
+    /// Memo (use if deposit was submitted with one)
+    #[serde(rename = "memo", skip_serializing_if = "Option::is_none")]
+    pub memo: Option<String>,
 }
 
 impl SubmitDepositTxRequest {
@@ -26,6 +32,8 @@ impl SubmitDepositTxRequest {
         SubmitDepositTxRequest {
             tx_hash,
             deposit_address,
+            near_sender_account: None,
+            memo: None,
         }
     }
 }
