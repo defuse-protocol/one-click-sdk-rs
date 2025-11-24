@@ -1,6 +1,6 @@
 [package]
 name = "one-click-sdk-rs"
-version = "0.1.11"
+version = "0.1.14"
 authors = ["2025 NEAR Foundation"]
 description = "API for One-Click Swaps"
 # Override this license by providing a License Object in the OpenAPI.

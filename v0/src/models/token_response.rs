@@ -94,6 +94,8 @@ pub enum Blockchain {
     Ltc,
     #[serde(rename = "xlayer")]
     Xlayer,
+    #[serde(rename = "monad")]
+    Monad,
 }
 
 impl Default for Blockchain {

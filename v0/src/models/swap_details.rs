@@ -55,6 +55,15 @@ pub struct SwapDetails {
     /// Refunded amount equivalent in USD
     #[serde(rename = "refundedAmountUsd", skip_serializing_if = "Option::is_none")]
     pub refunded_amount_usd: Option<String>,
+    /// Amount deposited to `depositAddress` onchain
+    #[serde(rename = "depositedAmount", skip_serializing_if = "Option::is_none")]
+    pub deposited_amount: Option<String>,
+    /// Amount deposited in readable format
+    #[serde(rename = "depositedAmountFormatted", skip_serializing_if = "Option::is_none")]
+    pub deposited_amount_formatted: Option<String>,
+    /// Amount deposited equivalent in USD
+    #[serde(rename = "depositedAmountUsd", skip_serializing_if = "Option::is_none")]
+    pub deposited_amount_usd: Option<String>,
     /// Referral identifier
     #[serde(rename = "referral", skip_serializing_if = "Option::is_none")]
     pub referral: Option<String>,
@@ -77,6 +86,9 @@ impl SwapDetails {
             refunded_amount: None,
             refunded_amount_formatted: None,
             refunded_amount_usd: None,
+            deposited_amount: None,
+            deposited_amount_formatted: None,
+            deposited_amount_usd: None,
             referral: None,
         }
     }
