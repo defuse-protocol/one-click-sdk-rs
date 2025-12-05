@@ -96,6 +96,12 @@ pub enum Blockchain {
     Xlayer,
     #[serde(rename = "monad")]
     Monad,
+    #[serde(rename = "bch")]
+    Bch,
+    #[serde(rename = "adi")]
+    Adi,
+    #[serde(rename = "starknet")]
+    Starknet,
 }
 
 impl Default for Blockchain {

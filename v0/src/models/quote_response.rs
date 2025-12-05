@@ -13,6 +13,9 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct QuoteResponse {
+    /// Unique identifier for request tracing and debugging
+    #[serde(rename = "correlationId")]
+    pub correlation_id: String,
     /// Timestamp in ISO format that was used to derive the deposit address
     #[serde(rename = "timestamp")]
     pub timestamp: String,
@@ -28,8 +31,9 @@ pub struct QuoteResponse {
 }
 
 impl QuoteResponse {
-    pub fn new(timestamp: String, signature: String, quote_request: models::QuoteRequest, quote: models::Quote) -> QuoteResponse {
+    pub fn new(correlation_id: String, timestamp: String, signature: String, quote_request: models::QuoteRequest, quote: models::Quote) -> QuoteResponse {
         QuoteResponse {
+            correlation_id,
             timestamp,
             signature,
             quote_request: Box::new(quote_request),

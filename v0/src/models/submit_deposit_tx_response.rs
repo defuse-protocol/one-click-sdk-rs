@@ -13,6 +13,9 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct SubmitDepositTxResponse {
+    /// Unique identifier for request tracing and debugging
+    #[serde(rename = "correlationId")]
+    pub correlation_id: String,
     /// Quote response from the original request
     #[serde(rename = "quoteResponse")]
     pub quote_response: Box<models::QuoteResponse>,
@@ -27,8 +30,9 @@ pub struct SubmitDepositTxResponse {
 }
 
 impl SubmitDepositTxResponse {
-    pub fn new(quote_response: models::QuoteResponse, status: Status, updated_at: String, swap_details: models::SwapDetails) -> SubmitDepositTxResponse {
+    pub fn new(correlation_id: String, quote_response: models::QuoteResponse, status: Status, updated_at: String, swap_details: models::SwapDetails) -> SubmitDepositTxResponse {
         SubmitDepositTxResponse {
+            correlation_id,
             quote_response: Box::new(quote_response),
             status,
             updated_at,

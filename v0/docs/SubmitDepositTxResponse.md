@@ -4,6 +4,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
+**correlation_id** | **String** | Unique identifier for request tracing and debugging | 
 **quote_response** | [**models::QuoteResponse**](QuoteResponse.md) | Quote response from the original request | 
 **status** | **String** |  | 
 **updated_at** | **String** | Last time the state was updated | 

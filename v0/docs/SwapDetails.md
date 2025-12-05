@@ -18,6 +18,7 @@ Name | Type | Description | Notes
 **refunded_amount** | Option<**String**> | Amount of `originAsset` transferred to `refundTo` | [optional]
 **refunded_amount_formatted** | Option<**String**> | Refunded amount in readable format | [optional]
 **refunded_amount_usd** | Option<**String**> | Refunded amount equivalent in USD | [optional]
+**refund_reason** | Option<**String**> | Reason for refund | [optional]
 **deposited_amount** | Option<**String**> | Amount deposited to `depositAddress` onchain | [optional]
 **deposited_amount_formatted** | Option<**String**> | Amount deposited in readable format | [optional]
 **deposited_amount_usd** | Option<**String**> | Amount deposited equivalent in USD | [optional]
