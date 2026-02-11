@@ -100,8 +100,12 @@ pub enum Blockchain {
     Bch,
     #[serde(rename = "adi")]
     Adi,
+    #[serde(rename = "plasma")]
+    Plasma,
     #[serde(rename = "starknet")]
     Starknet,
+    #[serde(rename = "aleo")]
+    Aleo,
 }
 
 impl Default for Blockchain {

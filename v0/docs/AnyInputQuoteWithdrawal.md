@@ -4,7 +4,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**status** | **String** | Withdrawal status | 
+**status** | **Status** | Withdrawal status (enum: SUCCESS, FAILED) | 
 **amount_out_formatted** | **String** | Amount out in readable format | 
 **amount_out_usd** | **String** | Amount out in USD | 
 **amount_out** | **String** | Amount out in smallest unit | 
