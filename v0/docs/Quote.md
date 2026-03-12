@@ -20,6 +20,7 @@ Name | Type | Description | Notes
 **virtual_chain_recipient** | Option<**String**> | EVM address of a transfer recipient in a virtual chain | [optional]
 **virtual_chain_refund_recipient** | Option<**String**> | EVM address of a refund recipient in a virtual chain | [optional]
 **custom_recipient_msg** | Option<**String**> | **HIGHLY EXPERIMENTAL** Message passed to `ft_transfer_call` when withdrawing assets to NEAR.  Otherwise, `ft_transfer` will be used.  **WARNING**: Funds will be lost if used with non NEP-141 tokens, in case of insufficient `storage_deposit` or if the recipient does not implement `ft_on_transfer` method. | [optional]
+**refund_fee** | Option<**String**> | Fee charged for refunding assets to the refund address in the smallest unit of the origin asset | [optional]
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

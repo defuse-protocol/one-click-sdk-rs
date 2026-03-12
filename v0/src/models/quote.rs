@@ -61,6 +61,9 @@ pub struct Quote {
     /// **HIGHLY EXPERIMENTAL** Message passed to `ft_transfer_call` when withdrawing assets to NEAR.  Otherwise, `ft_transfer` will be used.  **WARNING**: Funds will be lost if used with non NEP-141 tokens, in case of insufficient `storage_deposit` or if the recipient does not implement `ft_on_transfer` method.
     #[serde(rename = "customRecipientMsg", skip_serializing_if = "Option::is_none")]
     pub custom_recipient_msg: Option<String>,
+    /// Fee charged for refunding assets to the refund address in the smallest unit of the origin asset
+    #[serde(rename = "refundFee", skip_serializing_if = "Option::is_none")]
+    pub refund_fee: Option<String>,
 }
 
 impl Quote {
@@ -82,6 +85,7 @@ impl Quote {
             virtual_chain_recipient: None,
             virtual_chain_refund_recipient: None,
             custom_recipient_msg: None,
+            refund_fee: None,
         }
     }
 }

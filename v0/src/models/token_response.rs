@@ -66,6 +66,8 @@ pub enum Blockchain {
     Sol,
     #[serde(rename = "ton")]
     Ton,
+    #[serde(rename = "dash")]
+    Dash,
     #[serde(rename = "doge")]
     Doge,
     #[serde(rename = "xrp")]
@@ -102,6 +104,8 @@ pub enum Blockchain {
     Adi,
     #[serde(rename = "plasma")]
     Plasma,
+    #[serde(rename = "scroll")]
+    Scroll,
     #[serde(rename = "starknet")]
     Starknet,
     #[serde(rename = "aleo")]
