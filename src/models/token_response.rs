@@ -57,12 +57,9 @@ impl TokenResponse {
     }
 }
 /// Blockchain associated with the token
-#[derive(
-    Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize, Default,
-)]
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
 pub enum Blockchain {
     #[serde(rename = "near")]
-    #[default]
     Near,
     #[serde(rename = "eth")]
     Eth,
@@ -124,4 +121,10 @@ pub enum Blockchain {
     Stellar,
     #[serde(rename = "sui")]
     Sui,
+}
+
+impl Default for Blockchain {
+    fn default() -> Blockchain {
+        Self::Near
+    }
 }
