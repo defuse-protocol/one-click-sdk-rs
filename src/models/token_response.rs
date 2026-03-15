@@ -76,6 +76,8 @@ pub enum Blockchain {
     Sol,
     #[serde(rename = "ton")]
     Ton,
+    #[serde(rename = "dash")]
+    Dash,
     #[serde(rename = "doge")]
     Doge,
     #[serde(rename = "xrp")]
@@ -92,6 +94,34 @@ pub enum Blockchain {
     Pol,
     #[serde(rename = "tron")]
     Tron,
+    #[serde(rename = "op")]
+    Op,
+    #[serde(rename = "avax")]
+    Avax,
+    #[serde(rename = "cardano")]
+    Cardano,
+    #[serde(rename = "ltc")]
+    Ltc,
+    #[serde(rename = "xlayer")]
+    Xlayer,
+    #[serde(rename = "monad")]
+    Monad,
+    #[serde(rename = "bch")]
+    Bch,
+    #[serde(rename = "adi")]
+    Adi,
+    #[serde(rename = "plasma")]
+    Plasma,
+    #[serde(rename = "scroll")]
+    Scroll,
+    #[serde(rename = "starknet")]
+    Starknet,
+    #[serde(rename = "aleo")]
+    Aleo,
+    #[serde(rename = "aptos")]
+    Aptos,
+    #[serde(rename = "stellar")]
+    Stellar,
     #[serde(rename = "sui")]
     Sui,
 }
